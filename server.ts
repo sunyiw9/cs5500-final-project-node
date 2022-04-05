@@ -60,7 +60,7 @@ app.use(session(sess))
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) =>
-    res.send('Welcome! This is the final project for Team 7!'));
+    res.send('Welcome! This is the final project for Team 7!!!'));
 
 app.get('/add/:a/:b', (req: Request, res: Response) =>
     res.send(req.params.a + req.params.b));

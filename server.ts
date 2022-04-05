@@ -17,6 +17,7 @@ import TuitController from "./controllers/TuitController";
 import LikeController from "./controllers/LikeController";
 import SessionController from "./controllers/SessionController";
 import AuthenticationController from "./controllers/AuthenticationController";
+import MessageController from "./controllers/MessageController";
 import mongoose from "mongoose";
 import GroupController from "./controllers/GroupController";
 const cors = require("cors");
@@ -59,7 +60,7 @@ app.use(session(sess))
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) =>
-    res.send('Welcome!'));
+    res.send('Welcome! This is the final project for Team 7!'));
 
 app.get('/add/:a/:b', (req: Request, res: Response) =>
     res.send(req.params.a + req.params.b));
@@ -69,6 +70,7 @@ const courseController = new CourseController(app);
 const userController = UserController.getInstance(app);
 const tuitController = TuitController.getInstance(app);
 const likesController = LikeController.getInstance(app);
+const messageController = MessageController.getInstance(app);
 SessionController(app);
 AuthenticationController(app);
 GroupController(app);

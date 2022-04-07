@@ -59,8 +59,19 @@ export default class MessageController implements MessageControllerI {
      */
     userSendsMessage = (req: Request, res: Response) =>
         MessageController.messageDao.userSendsMessage(req.body, req.params.uid, req.params.uid2)
-            .then((message: Message) => res.json(message));
-
+    //
+    /*
+    {
+        // @ts-ignore
+        let userId = req.params.uid === "my" && req.session['profile'] ?
+            // @ts-ignore
+            req.session['profile']._id : req.params.uid;
+        if (userId === "my") {
+            res.sendStatus(503);
+            return;
+        }
+     */
+        .then((message: Message) => res.json(message));
     /**
      * Removes message instance from the records that a user deletes a message
      * @param {Request} req Represents request from client, including the

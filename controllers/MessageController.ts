@@ -42,6 +42,7 @@ export default class MessageController implements MessageControllerI {
             app.get('/api/users/:uid/messages/received', MessageController.messageController.findAllReceivedMessage);
             app.get('/api/messages', MessageController.messageController.findAllMessages);
 
+            app.get('/api/users/:uid/messages/:uid2', MessageController.messageController.findAllMessagesBetweenUsers);
         }
         return MessageController.messageController;
     }
@@ -103,4 +104,15 @@ export default class MessageController implements MessageControllerI {
     findAllMessages = (req: Request, res: Response) =>
         MessageController.messageDao.findAllMessages()
             .then((messages:Message[]) => res.json(messages));
+
+    /**
+     * Retrieves all messages between users from the database
+     * @param {Request} req Represents request from client, including the path
+     * parameter uid representing the user who sends the message
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON arrays containing the message objects
+     */
+    findAllMessagesBetweenUsers = (req: Request, res: Response) =>
+        MessageController.messageDao.findAllMessagesBetweenUsers(req.params.uid, req.params.uid2)
+            .then((messages: Message[]) => res.json(messages));
 }

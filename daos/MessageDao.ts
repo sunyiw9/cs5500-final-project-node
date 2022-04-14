@@ -69,4 +69,15 @@ export default class MessageDao implements MessageDaoI {
     findAllMessages = async():Promise<Message[]> =>
         MessageModel.find().exec();
 
+    /**
+     * Find all messages between two given users from the database
+     * @param {string} uid User's primary key
+     * @param {string} uid2 User's primary key
+     * @returns Promise To be notified when messages are retrieved from the database
+     */
+    findAllMessagesBetweenUsers = async (uid: string, uid2: string): Promise<Message[]> =>
+        MessageModel.find({ $or: [{from: uid, to : uid2}, {to: uid, from : uid2}] })
+            .populate('from')
+            .populate('to')
+            .exec()
 }

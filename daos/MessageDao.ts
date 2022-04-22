@@ -80,4 +80,9 @@ export default class MessageDao implements MessageDaoI {
             .populate('from')
             .populate('to')
             .exec()
+
+    // Add one: findMessagesById
+    findMessageById = async (mid: string): Promise<any> =>
+        MessageModel.findById(mid)
 }
+

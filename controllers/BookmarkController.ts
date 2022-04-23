@@ -39,8 +39,10 @@ export default class BookmarkController implements BookmarkControllerI {
             BookmarkController.bookmarkController = new BookmarkController();
 
             app.get("/api/users/:uid/bookmarks", BookmarkController.bookmarkController.findAllMessagesBookmarkedByUser);
-            app.get("/api/tuits/:tid/bookmarks", BookmarkController.bookmarkController.findAllUsersThatBookmarkedMessage);
+            app.get("/api/messages/:mid/bookmarks", BookmarkController.bookmarkController.findAllUsersThatBookmarkedMessage);
             app.put("/api/users/:uid/bookmarks/:mid", BookmarkController.bookmarkController.userTogglesMessageBookmarks);
+            app.post("/api/users/:uid/bookmarks/:mid", BookmarkController.bookmarkController.userBookmarksMessage);
+            app.delete("/api/users/:uid/bookmarks/:mid", BookmarkController.bookmarkController.userUnbookmarksMessage);
         }
         return BookmarkController.bookmarkController;
     }
@@ -115,5 +117,16 @@ export default class BookmarkController implements BookmarkControllerI {
         } catch (e) {
             res.sendStatus(404);
         }
+    }
+
+    // These two are for postman test
+    userBookmarksMessage = (req: Request, res: Response) => {
+        BookmarkController.bookmarkDao.userBookmarksMessage(req.params.uid, req.params.mid)
+            .then(bookmarks => res.json(bookmarks))
+    }
+
+    userUnbookmarksMessage = (req: Request, res: Response) => {
+        BookmarkController.bookmarkDao.userUnbookmarksMessage(req.params.uid, req.params.mid)
+            .then((status) => res.send(status))
     }
 };

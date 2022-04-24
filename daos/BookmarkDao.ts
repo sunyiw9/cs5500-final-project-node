@@ -34,7 +34,13 @@ export default class BookmarkDao implements BookmarkDaoI {
             .populate({
                 path: "message",
                 populate: {
-                    path: "from"
+                    path:"from",
+                }
+            })
+            .populate({
+                path: "message",
+                populate: {
+                    path:"to",
                 }
             })
             .exec();

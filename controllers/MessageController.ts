@@ -43,6 +43,7 @@ export default class MessageController implements MessageControllerI {
             app.get('/api/messages', MessageController.messageController.findAllMessages);
 
             app.get('/api/users/:uid/messages/:uid2', MessageController.messageController.findAllMessagesBetweenUsers);
+            app.put('/api/messages/:mid', MessageController.messageController.updateMessage);
         }
         return MessageController.messageController;
     }
@@ -115,4 +116,14 @@ export default class MessageController implements MessageControllerI {
     findAllMessagesBetweenUsers = (req: Request, res: Response) =>
         MessageController.messageDao.findAllMessagesBetweenUsers(req.params.uid, req.params.uid2)
             .then((messages: Message[]) => res.json(messages));
+
+    /**
+     * @param {Request} req Represents request from client, including path
+     * parameter mid identifying the primary key of the message to be modified
+     * @param {Response} res Represents response to client, including status
+     * on whether updating a message was successful or not
+     */
+    updateMessage = (req: Request, res: Response) =>
+        MessageController.messageDao.updateMessage(req.params.mid, req.body)
+            .then((status) => res.send(status));
 }

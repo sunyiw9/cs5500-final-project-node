@@ -11,6 +11,7 @@
  * service
  */
 import express, {Request, Response} from 'express';
+import BookmarkController from "./controllers/BookmarkController"
 import CourseController from "./controllers/CourseController";
 import UserController from "./controllers/UserController";
 import TuitController from "./controllers/TuitController";
@@ -71,6 +72,8 @@ const userController = UserController.getInstance(app);
 const tuitController = TuitController.getInstance(app);
 const likesController = LikeController.getInstance(app);
 const messageController = MessageController.getInstance(app);
+const bookmarkController = BookmarkController.getInstance(app);
+
 SessionController(app);
 AuthenticationController(app);
 GroupController(app);

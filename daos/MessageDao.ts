@@ -81,6 +81,12 @@ export default class MessageDao implements MessageDaoI {
             .populate('to')
             .exec()
 
+
+    // Add one: findMessagesById
+    findMessageById = async (mid: string): Promise<any> =>
+        MessageModel.findById(mid)
+
+
     /**
      * Updates message with new values in database
      * @param {string} mid Primary key of message to be modified

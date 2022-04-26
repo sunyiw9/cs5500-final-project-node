@@ -16,6 +16,9 @@ export default class BookmarkDao implements BookmarkDaoI {
     findIfUserBookmarkedMessage = async (mid: string, uid: string): Promise<any> =>
         BookmarkModel.findOne({message: mid, bookmarkedBy: uid})
 
+    countHowManyBookmarkedMessage = async (mid: string): Promise<any> =>
+        BookmarkModel.count({message: mid});
+
     userBookmarksMessage = async (uid: string, mid: string): Promise<any> =>
         BookmarkModel.create({message: mid, bookmarkedBy: uid});
 

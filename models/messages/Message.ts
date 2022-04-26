@@ -3,6 +3,7 @@
  * users, as in user sends message to another user
  */
 import User from "../users/User"
+import Stats from "./Stats";
 /**
  * @typedef Message Represents messages relationship between two users
  * as in a user sends a message to another user
@@ -15,6 +16,6 @@ export default interface Message {
     message: string,
     to: User,
     from: User,
-    sentOn:Date
-
+    sentOn:Date,
+    stats: Stats
 }

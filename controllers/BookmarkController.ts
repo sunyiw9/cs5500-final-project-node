@@ -103,13 +103,19 @@ export default class BookmarkController implements BookmarkControllerI {
 
         try {
             const userAlreadyBookmarkedMessage = await bookmarkDao.findIfUserBookmarkedMessage(mid, uid);
+            const howManyBookmarkedMessage = await bookmarkDao.countHowManyBookmarkedMessage(mid); // count how many like this tuit
+
             let message = await messageDao.findMessageById(mid);
             // if user already bookmarks tuit, the button is disbookmark button
             // otherwise the button is bookmark button
             if (userAlreadyBookmarkedMessage) {
                 await BookmarkController.bookmarkDao.userUnbookmarksMessage(userId, mid);
+                message.stats.bookmarks = howManyBookmarkedMessage - 1;
+
             } else {
                 await BookmarkController.bookmarkDao.userBookmarksMessage(userId, mid);
+                message.stats.bookmarks = howManyBookmarkedMessage + 1;
+
             };
             console.log(message);
             // update bookmarks count

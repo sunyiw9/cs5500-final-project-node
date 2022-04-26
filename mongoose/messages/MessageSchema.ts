@@ -15,6 +15,9 @@ const MessageSchema = new mongoose.Schema<Message>({
     message: {type: String,required: true},
     to:{type: Schema.Types.ObjectId, ref: "UserModel"},
     from:{type: Schema.Types.ObjectId, ref: "UserModel"},
-    sentOn:{type: Date, default: Date.now}
+    sentOn:{type: Date, default: Date.now},
+    stats: {
+        bookmarks: {type: Number, default: 0}
+    }
 }, {collection: "messages"});
 export default MessageSchema;

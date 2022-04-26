@@ -40,6 +40,7 @@ export default class BookmarkController implements BookmarkControllerI {
 
             app.get("/api/users/:uid/bookmarks", BookmarkController.bookmarkController.findAllMessagesBookmarkedByUser);
             app.get("/api/messages/:mid/bookmarks", BookmarkController.bookmarkController.findAllUsersThatBookmarkedMessage);
+            app.get("/api/bookmarks/users/:uid/messages/:mid", BookmarkController.bookmarkController.findBookmarkByUserAndMessage);
             app.put("/api/users/:uid/bookmarks/:mid", BookmarkController.bookmarkController.userTogglesMessageBookmarks);
             app.post("/api/users/:uid/bookmarks/:mid", BookmarkController.bookmarkController.userBookmarksMessage);
             app.delete("/api/users/:uid/bookmarks/:mid", BookmarkController.bookmarkController.userUnbookmarksMessage);
@@ -83,6 +84,20 @@ export default class BookmarkController implements BookmarkControllerI {
     }
 
 
+    findBookmarkByUserAndMessage = (req: Request, res: Response) => {
+        const { mid, uid } = req.params;
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = uid === 'me' && profile ?
+            profile._id : uid;
+
+        BookmarkController.bookmarkDao.findIfUserBookmarkedMessage(mid, uid)
+            .then(bookmark => {
+                res.json(bookmark);
+            });
+    }
+
+
     /**
      * @param {Request} req Represents request from client, including the
      * path parameters uid and tid representing the user that is liking the tuit
@@ -108,12 +123,14 @@ export default class BookmarkController implements BookmarkControllerI {
             // otherwise the button is bookmark button
             if (userAlreadyBookmarkedMessage) {
                 await BookmarkController.bookmarkDao.userUnbookmarksMessage(userId, mid);
+                res.sendStatus(200);
             } else {
                 await BookmarkController.bookmarkDao.userBookmarksMessage(userId, mid);
+                res.sendStatus(201);
             };
             console.log(message);
             // update bookmarks count
-            res.sendStatus(200);
+
         } catch (e) {
             res.sendStatus(404);
         }

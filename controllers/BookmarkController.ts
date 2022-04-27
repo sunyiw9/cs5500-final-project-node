@@ -10,14 +10,17 @@ import MessageDao from "../daos/MessageDao";
  * @class BookmarkController Implements RESTful Web service API for bookmarks resource.
  * Defines the following HTTP endpoints:
  * <ul>
- *     <li>GET /api/users/:uid/bookmarks to retrieve all the tuits bookmarkd by a user
+ *     <li>GET /api/users/:uid/bookmarks to retrieve all the messages bookmarked by a user
  *     </li>
- *     <li>GET /api/tuits/:tid/bookmarks to retrieve all users that bookmarkd a tuit
+ *     <li>GET /api/message/:mid/bookmarks to retrieve all users that bookmarked a message
  *     </li>
- *     <li>POST /api/users/:uid/bookmarks/:tid to record that a user bookmarks a tuit
+ *     <li>GET /api/bookmarks/users/:uid/messages/:mid to find messages that user has bookmarked
  *     </li>
- *     <li>DELETE /api/users/:uid/unbookmarks/:tid to record that a user
- *     no londer bookmarks a tuit</li>
+ *     <li>PUT /api/users/:uid/bookmarks/:mid to bookmark a message or unbookmark a message
+ *     </li>
+ *     <li>POST /api/users/:uid/bookmarks/:mid to record that a user bookmarks a message
+ *     </li>
+ *     <li>DELETE /api/users/:uid/bookmarks/:mid to record that a user unbookmarks a message
  * </ul>
  * @property {bookmarkDao} bookmarkDao Singleton DAO implementing bookmarks CRUD operations
  * @property {bookmarkController} bookmarkController Singleton controller implementing
@@ -51,9 +54,9 @@ export default class BookmarkController implements BookmarkControllerI {
     private constructor() {}
 
     /**
-     * Retrieves all users that bookmarkd a tuit from the database
+     * Retrieves all users that bookmarked a message from the database
      * @param {Request} req Represents request from client, including the path
-     * parameter tid representing the bookmarkd tuit
+     * parameter mid representing the bookmarked message
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the user objects
      */
@@ -62,11 +65,11 @@ export default class BookmarkController implements BookmarkControllerI {
             .then(bookmarks => res.json(bookmarks));
 
     /**
-     * Retrieves all tuits bookmarkd by a user from the database
+     * Retrieves all messages bookmarked by a user from the database
      * @param {Request} req Represents request from client, including the path
-     * parameter uid representing the user bookmarkd the tuits
+     * parameter uid representing the user bookmarked the messages
      * @param {Response} res Represents response to client, including the
-     * body formatted as JSON arrays containing the tuit objects that were bookmarkd
+     * body formatted as JSON arrays containing the message objects that were bookmarked
      */
     findAllMessagesBookmarkedByUser = (req: Request, res: Response) => {
         const uid = req.params.uid;
@@ -83,7 +86,13 @@ export default class BookmarkController implements BookmarkControllerI {
             });
     }
 
-
+    /**
+     * Retrieves one message bookmarked by a user and return the message
+     * @param {Request} req Represents request from client, including the path
+     * parameter uid representing the user bookmarked the messages
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON arrays containing the message objects that were bookmarked
+     */
     findBookmarkByUserAndMessage = (req: Request, res: Response) => {
         const { mid, uid } = req.params;
         // @ts-ignore
@@ -99,9 +108,11 @@ export default class BookmarkController implements BookmarkControllerI {
 
 
     /**
+     * User bookmarks a message, or unbookmarks the same message depending on
+     * if user has already bookmarked that message
      * @param {Request} req Represents request from client, including the
-     * path parameters uid and tid representing the user that is liking the tuit
-     * and the tuit being bookmarkd
+     * path parameters uid and mid representing the user that is liking the messages
+     * and the messages being bookmarked
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON containing the new bookmarks that was inserted in the
      * database
@@ -119,7 +130,7 @@ export default class BookmarkController implements BookmarkControllerI {
         try {
             const userAlreadyBookmarkedMessage = await bookmarkDao.findIfUserBookmarkedMessage(mid, uid);
             let message = await messageDao.findMessageById(mid);
-            // if user already bookmarks tuit, the button is disbookmark button
+            // if user already bookmarks message, the button is disbookmark button
             // otherwise the button is bookmark button
             if (userAlreadyBookmarkedMessage) {
                 await BookmarkController.bookmarkDao.userUnbookmarksMessage(userId, mid);
@@ -137,11 +148,24 @@ export default class BookmarkController implements BookmarkControllerI {
     }
 
     // These two are for postman test
+    /**
+     * User bookmarks a message
+     * @param {Request} req Represents request from client, including the path
+     * parameter uid representing the user bookmarked the messages
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON arrays containing the message objects that were bookmarked
+     */
     userBookmarksMessage = (req: Request, res: Response) => {
         BookmarkController.bookmarkDao.userBookmarksMessage(req.params.uid, req.params.mid)
             .then(bookmarks => res.json(bookmarks))
     }
-
+    /**
+     * User unbookmarks a message
+     * @param {Request} req Represents request from client, including the path
+     * parameter uid representing the user bookmarked the messages
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON arrays containing the message objects that were bookmarked
+     */
     userUnbookmarksMessage = (req: Request, res: Response) => {
         BookmarkController.bookmarkDao.userUnbookmarksMessage(req.params.uid, req.params.mid)
             .then((status) => res.send(status))
